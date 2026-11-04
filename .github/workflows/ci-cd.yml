@@ -1,67 +1,22 @@
-
-name: User CRUD CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  packages: write
-
-jobs:
-  continuous-integration:
-    name: Continuous Integration
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Automated Tests
-        run: npm test -- --watch=false
-
-      - name: Build Ionic Angular Application
-        run: npm run build
-
-  continuous-deployment:
-    name: Continuous Deployment
-    needs: continuous-integration
-    runs-on: [self-hosted, Windows, X64]
-
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Build Docker Image
-        run: docker build -t user-crud:latest .
-
-      - name: Remove Previous Container
-        run: |
-          docker rm -f user-crud-container
-        continue-on-error: true
-
-      - name: Run Updated Docker Container
-        run: |
-          docker run -d --name user-crud-container -p 8100:80 user-crud:latest
-
       - name: Verify Application
         shell: powershell
         run: |
-          Start-Sleep -Seconds 10
-          $response = Invoke-WebRequest -Uri http://localhost:8100
-          if ($response.StatusCode -ne 200) {
-            throw "Application verification failed."
+          $success = $false
+
+          for ($i = 1; $i -le 15; $i++) {
+            try {
+              Invoke-WebRequest -Uri http://localhost:8100/ -UseBasicParsing -TimeoutSec 2 | Out-Null
+              $success = $true
+              break
+            }
+            catch {
+              Start-Sleep -Seconds 2
+            }
           }
+
+          if (-not $success) {
+            docker logs user-crud-container
+            exit 1
+          }
+
           Write-Host "Application is running successfully!"

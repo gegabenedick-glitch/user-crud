@@ -1,0 +1,55 @@
+<ion-header class="page-header">
+  <ion-toolbar>
+    <div class="brand-lockup">
+      <div class="brand-mark"><ion-icon name="people-outline"></ion-icon></div>
+      <div><strong>User Manager</strong><span>USER DIRECTORY</span></div>
+    </div>
+    <div class="brand-tab">TAB 1 · ADD USER</div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="users-page">
+    <section class="intro-row">
+      <div>
+        <p class="eyebrow">USER CRUD</p>
+        <h1>Add a user<span>.</span></h1>
+        <p class="intro-copy">Fill in the details to add someone to your directory.</p>
+      </div>
+    </section>
+
+      <section class="user-form-section" aria-labelledby="form-title">
+        <div class="form-heading">
+          <div>
+            <p class="eyebrow">ADD TO YOUR DIRECTORY</p>
+            <h2 id="form-title">User details</h2>
+          </div>
+        </div>
+        <form (ngSubmit)="saveUser()">
+          <div class="form-grid">
+            <label class="field">
+              <span>Full name <b>*</b></span>
+              <ion-input name="name" [(ngModel)]="form.name" required maxlength="120" placeholder="Enter full name"></ion-input>
+            </label>
+            <label class="field">
+              <span>Email <b>*</b></span>
+              <ion-input name="email" [(ngModel)]="form.email" type="email" required maxlength="160" placeholder="name@example.com"></ion-input>
+            </label>
+            <label class="field">
+              <span>Phone</span>
+              <ion-input name="phone" [(ngModel)]="form.phone" type="tel" maxlength="30" placeholder="Optional phone number"></ion-input>
+            </label>
+          </div>
+          @if (errorMessage) { <p class="form-message error-message" role="alert">{{ errorMessage }}</p> }
+          <div class="form-actions">
+            <ion-button class="save-button" type="submit" [disabled]="!form.name.trim() || !form.email.trim() || isSaving">
+              @if (isSaving) { <ion-spinner name="crescent"></ion-spinner> } @else { Add user }
+            </ion-button>
+          </div>
+        </form>
+      </section>
+
+    @if (successMessage) { <p class="form-message success-message" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <p class="form-message error-message" role="alert">{{ errorMessage }}</p> }
+  </main>
+</ion-content>

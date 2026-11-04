@@ -1,0 +1,48 @@
+<ion-header class="page-header">
+  <ion-toolbar>
+    <div class="page-brand">
+      <div class="brand-mark"><ion-icon name="stats-chart-outline"></ion-icon></div>
+      <div><strong>User Manager</strong><span>TAB 3 · OVERVIEW</span></div>
+    </div>
+    <ion-button class="refresh-button" fill="clear" slot="end" (click)="refreshUsers()" [disabled]="loading" aria-label="Refresh user overview">
+      <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="overview-page">
+    <section class="overview-heading">
+      <div><p class="eyebrow">USER DIRECTORY</p><h1>Users at a glance<span>.</span></h1><p>Overview · {{ users.length }} {{ users.length === 1 ? 'user' : 'users' }}</p></div>
+      <div class="user-summary"><span>With phone number</span><strong>{{ phonePercentage }}%</strong></div>
+    </section>
+
+    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
+    @if (loading) {
+      <div class="loading-state"><ion-spinner name="crescent"></ion-spinner><span>Loading users…</span></div>
+    } @else {
+      <section class="metric-grid" aria-label="User summary">
+        <article class="metric-card"><div class="metric-icon total"><ion-icon name="people-outline"></ion-icon></div><span class="metric-label">Total users</span><strong>{{ users.length }}</strong><small>In your directory</small></article>
+        <article class="metric-card"><div class="metric-icon read"><ion-icon name="call-outline"></ion-icon></div><span class="metric-label">With phone</span><strong>{{ usersWithPhone }}</strong><small>Phone number provided</small></article>
+        <article class="metric-card"><div class="metric-icon unread"><ion-icon name="mail-outline"></ion-icon></div><span class="metric-label">No phone</span><strong>{{ usersWithoutPhone }}</strong><small>Email contact available</small></article>
+      </section>
+
+      <section class="overview-section" aria-labelledby="recent-users-title">
+        <header class="section-heading"><div><p class="eyebrow">RECENTLY ADDED</p><h2 id="recent-users-title">Latest users</h2></div><span class="section-count">{{ latestUsers.length }}</span></header>
+        @if (latestUsers.length) {
+          <div class="recent-list">
+            @for (user of latestUsers; track user.id) {
+              <article class="recent-user">
+                <div class="user-mark"><ion-icon name="person-outline"></ion-icon></div>
+                <div class="recent-copy"><strong>{{ user.name }}</strong><span>{{ user.email }} · {{ user.createdAt | date:'mediumDate' }}</span></div>
+                @if (user.phone) { <span class="phone-state">Phone added</span> }
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-state"><ion-icon name="people-outline"></ion-icon><p>Add users from Tab 1 to see them here.</p></div>
+        }
+      </section>
+    }
+  </main>
+</ion-content>

@@ -1,0 +1,55 @@
+:host { --ink: #263b3a; --muted: #758481; --line: #e4e9e4; display: block; }
+ion-content { --background: #f4f6f1; }
+.page-header ion-toolbar { min-height: 70px; --background: #fbfcf8; --padding-start: 22px; --padding-end: 22px; border-bottom: 1px solid var(--line); }
+.page-brand { display: flex; align-items: center; gap: 11px; }
+.brand-mark, .user-avatar { display: grid; place-items: center; border-radius: 10px; background: #e8efeb; color: #42736d; }
+.brand-mark { width: 42px; height: 42px; font-size: 22px; }
+.page-brand strong, .page-brand span { display: block; }
+.page-brand strong, .manager-intro h1, .collection-heading h2, .form-heading h2, .user-details h3, .empty-state h2 { font-family: Georgia, 'Times New Roman', serif; }
+.page-brand strong { color: var(--ink); font-size: 18px; }
+.page-brand span { margin-top: 3px; color: #8c9892; font-size: 9px; font-weight: 800; letter-spacing: 1px; }
+.user-count { margin-left: auto; color: var(--muted); font-size: 12px; }
+.manager-page { width: min(100% - 48px, 900px); margin: 0 auto; padding: 38px 0 90px; }
+.manager-intro { margin-bottom: 30px; }
+.eyebrow { margin: 0 0 8px; color: #8a9690; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; }
+.manager-intro h1 { margin: 0; color: var(--ink); font-size: clamp(34px, 6vw, 46px); font-weight: 500; }
+.manager-intro h1 span { color: #c45d3d; }
+.collection-heading, .form-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.collection-heading { margin-bottom: 17px; }
+.collection-heading h2, .form-heading h2 { margin: 0; color: var(--ink); font-size: 25px; font-weight: 500; }
+.collection-heading ion-searchbar { width: min(100%, 300px); padding: 0; --background: #fff; --border-radius: 8px; --box-shadow: none; --color: var(--ink); --icon-color: #87948f; --placeholder-color: #939d98; border: 1px solid var(--line); border-radius: 8px; }
+.user-list { border-top: 1px solid #dce3dd; }
+.user-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 17px 4px; border-bottom: 1px solid #dce3dd; }
+.user-avatar { width: 42px; height: 42px; font-size: 20px; }
+.user-details { min-width: 0; }
+.user-details h3 { margin: 0 0 4px; color: var(--ink); font-size: 18px; overflow-wrap: anywhere; }
+.user-details p, .user-details span { margin: 0; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.user-details span { display: inline-block; margin-top: 4px; }
+.user-actions { display: flex; }
+.user-actions ion-button { --color: #50726b; margin: 0; }
+.user-actions .delete-button { --color: #b65543; }
+.user-form-section { margin-bottom: 28px; padding: 22px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcf8; }
+.form-heading { margin-bottom: 18px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { display: grid; gap: 7px; color: #596b65; font-size: 12px; font-weight: 700; }
+.field b { color: #c45d3d; }
+.field ion-input { --background: #fff; --padding-start: 12px; --padding-end: 12px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
+.save-button { --background: #315e59; --border-radius: 8px; --box-shadow: none; font-size: 12px; font-weight: 700; text-transform: none; }
+.form-message { margin: 10px 0; font-size: 12px; }
+.error-message { color: #b34f3f; }
+.success-message { color: #46745e; }
+.empty-state { display: grid; min-height: 170px; align-content: center; justify-items: center; gap: 9px; color: var(--muted); text-align: center; }
+.empty-state ion-icon { color: #78938a; font-size: 30px; }
+.empty-state h2 { margin: 5px 0 0; color: var(--ink); font-size: 21px; font-weight: 500; }
+.empty-state p { margin: 0; font-size: 12px; }
+@media (max-width: 600px) {
+  .page-header ion-toolbar { --padding-start: 14px; --padding-end: 14px; }
+  .manager-page { width: calc(100% - 32px); padding-top: 28px; }
+  .collection-heading { align-items: flex-start; flex-direction: column; }
+  .collection-heading ion-searchbar { width: 100%; }
+  .user-row { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 9px; }
+  .user-avatar { width: 36px; height: 36px; }
+  .user-actions { flex-direction: column; }
+  .form-grid { grid-template-columns: 1fr; }
+}

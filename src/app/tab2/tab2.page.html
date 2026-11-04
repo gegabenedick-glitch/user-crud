@@ -1,0 +1,66 @@
+<ion-header class="page-header">
+  <ion-toolbar>
+    <div class="page-brand">
+      <div class="brand-mark"><ion-icon name="people-outline"></ion-icon></div>
+      <div><strong>User Manager</strong><span>TAB 2 · MANAGE USERS</span></div>
+    </div>
+    <span class="user-count">{{ users.length }} {{ users.length === 1 ? 'user' : 'users' }}</span>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main class="manager-page">
+    <section class="manager-intro">
+      <div><p class="eyebrow">USER DIRECTORY</p><h1>Manage users<span>.</span></h1></div>
+    </section>
+
+    @if (isFormOpen) {
+      <section class="user-form-section" aria-labelledby="manager-form-title">
+        <div class="form-heading">
+          <div><p class="eyebrow">UPDATE USER DETAILS</p><h2 id="manager-form-title">Edit user</h2></div>
+          <ion-button fill="clear" aria-label="Close form" (click)="closeForm()"><ion-icon slot="icon-only" name="close-outline"></ion-icon></ion-button>
+        </div>
+        <form (ngSubmit)="saveUser()">
+          <div class="form-grid">
+            <label class="field"><span>Full name <b>*</b></span><ion-input name="name" [(ngModel)]="form.name" required maxlength="120" placeholder="Enter full name"></ion-input></label>
+            <label class="field"><span>Email <b>*</b></span><ion-input name="email" [(ngModel)]="form.email" type="email" required maxlength="160" placeholder="name@example.com"></ion-input></label>
+            <label class="field"><span>Phone</span><ion-input name="phone" [(ngModel)]="form.phone" type="tel" maxlength="30" placeholder="Optional phone number"></ion-input></label>
+          </div>
+          @if (errorMessage) { <p class="form-message error-message" role="alert">{{ errorMessage }}</p> }
+          <div class="form-actions">
+            <ion-button fill="clear" type="button" (click)="closeForm()">Cancel</ion-button>
+            <ion-button class="save-button" type="submit" [disabled]="!form.name.trim() || !form.email.trim() || isSaving">Save changes</ion-button>
+          </div>
+        </form>
+      </section>
+    }
+
+    @if (successMessage) { <p class="form-message success-message" role="status">{{ successMessage }}</p> }
+    @if (errorMessage && !isFormOpen) { <p class="form-message error-message" role="alert">{{ errorMessage }}</p> }
+
+    <section aria-labelledby="manager-users-title">
+      <div class="collection-heading">
+        <div><p class="eyebrow">DIRECTORY</p><h2 id="manager-users-title">All users</h2></div>
+        <ion-searchbar [(ngModel)]="searchTerm" name="userSearch" placeholder="Search users" aria-label="Search users"></ion-searchbar>
+      </div>
+      @if (filteredUsers.length) {
+        <div class="user-list">
+          @for (user of filteredUsers; track user.id) {
+            <article class="user-row">
+              <div class="user-avatar"><ion-icon name="person-outline"></ion-icon></div>
+              <div class="user-details"><h3>{{ user.name }}</h3><p>{{ user.email }}</p>@if (user.phone) { <span>{{ user.phone }}</span> }</div>
+              <div class="user-actions">
+                <ion-button fill="clear" aria-label="Edit user" title="Edit user" (click)="editUser(user)"><ion-icon slot="icon-only" name="create-outline"></ion-icon></ion-button>
+                <ion-button fill="clear" class="delete-button" aria-label="Delete user" title="Delete user" (click)="deleteUser(user)"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
+              </div>
+            </article>
+          }
+        </div>
+      } @else if (searchTerm.trim()) {
+        <div class="empty-state"><ion-icon name="search-outline"></ion-icon><h2>No users found</h2><p>Try a different search.</p></div>
+      } @else {
+        <div class="empty-state"><ion-icon name="people-outline"></ion-icon><h2>No users yet</h2><p>Add users from Tab 1.</p></div>
+      }
+    </section>
+  </main>
+</ion-content>

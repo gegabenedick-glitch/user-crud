@@ -1,22 +1,53 @@
-      - name: Verify Application
-        shell: powershell
-        run: |
-          $success = $false
+name: User CRUD CI/CD Pipeline
 
-          for ($i = 1; $i -le 15; $i++) {
-            try {
-              Invoke-WebRequest -Uri http://localhost:8100/ -UseBasicParsing -TimeoutSec 2 | Out-Null
-              $success = $true
-              break
-            }
-            catch {
-              Start-Sleep -Seconds 2
-            }
-          }
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-          if (-not $success) {
-            docker logs user-crud-container
-            exit 1
-          }
+permissions:
+  contents: read
+  packages: write
 
-          Write-Host "Application is running successfully!"
+jobs:
+  build-and-test:
+    name: Build and Test Ionic Angular
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Ionic Angular Application
+        run: npm run build
+
+  build-and-publish:
+    name: Build and Publish Docker
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t user-crud:latest .
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Tag Docker Image
+        run: docker tag user-crud:latest ghcr.io/${{ github.repository_owner }}/user-crud:latest
+
+      - name: Publish Docker Image
+        run: docker push ghcr.io/${{ github.repository_owner }}/user-crud:latest

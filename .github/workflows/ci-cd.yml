@@ -1,74 +1,49 @@
 
-name: User CRUD CI/CD Pipeline
+name: Deploy Ionic App Locally
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  continuous-integration:
-    name: Build and Test Ionic Angular
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build Ionic Angular Application
-        run: npm run build
-
-  continuous-deployment:
-    name: Deploy Ionic App Locally
-    needs: continuous-integration
+  deploy:
     runs-on: [self-hosted, Windows, X64]
 
     steps:
-      - name: Checkout Latest Code
+      - name: Checkout latest code
         uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t user-crud:latest .
+      - name: Build Docker image
+        run: docker build -t ionic-crud:latest .
 
-      - name: Remove Previous Container
-        run: docker rm -f user-crud-container
+      - name: Remove previous container
+        run: docker rm -f ionic-crud
         continue-on-error: true
 
-      - name: Start Updated Container
-        run: docker run -d --name user-crud-container --restart unless-stopped -p 8100:80 user-crud:latest
+      - name: Start updated container
+        run: docker run -d --name ionic-crud --restart unless-stopped -p 8100:8100 ionic-crud:latest
 
-      - name: Verify Application
+      - name: Verify app
         shell: powershell
         run: |
           $success = $false
 
-          for ($i = 1; $i -le 15; $i++) {
-            try {
-              Invoke-WebRequest -Uri http://localhost:8100/ -UseBasicParsing -TimeoutSec 2 | Out-Null
-              $success = $true
-              break
-            }
-            catch {
-              Start-Sleep -Seconds 2
-            }
+          for ($j = 1; $j -le 15; $j++) {
+              try {
+                  Invoke-WebRequest http://localhost:8100/ -UseBasicParsing -TimeoutSec 5 | Out-Null
+                  $success = $true
+                  break
+              }
+              catch {
+                  Start-Sleep -Seconds 2
+              }
           }
 
           if (-not $success) {
-            docker logs user-crud-container
-            exit 1
+              docker logs ionic-crud
+              exit 1
           }
-
-          Write-Host "Application is running successfully!"

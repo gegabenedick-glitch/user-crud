@@ -1,30 +1,16 @@
 
-# Stage 1: Build Ionic Angular application
-FROM node:24-alpine AS builder
+FROM node:24-alpine
 
 WORKDIR /app
 
-# Copy package files
+RUN npm install -g @ionic/cli
+
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm ci
 
-# Copy application source
 COPY . .
 
-# Build production application
-RUN npm run build
+EXPOSE 8100
 
-# Stage 2: Serve application using Nginx
-FROM nginx:alpine
-
-# Copy production build
-COPY --from=builder /app/www /usr/share/nginx/html
-
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["ionic", "serve", "--host = 0.0.0.0", "--port = 8100", "--no-open"]
